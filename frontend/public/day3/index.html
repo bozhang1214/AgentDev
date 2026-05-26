@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset = "utf-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <title>我的个人主页 - Flexbox版</title>
+    <link rel="stylesheet" href="style-flex.css">
+</head>
+
+<body>
+    <header>
+        <h1>我的个人主页</h1>
+        <nav>
+            <a href="#">首页</a>
+            <a href="#">项目</a>
+            <a href="#">联系</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 个人信息卡片区：头像 + 简介 + 链接 排成一行（响应式换行）-->
+        <section class="profile-card">
+            <div class="avatar">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="头像占位">
+            </div>
+            <div class="intro">
+                <h2>张三</h2>
+                <p>前端开发者，热爱设计和用户体验。</p>
+                <p>喜欢构建优雅的代码和响应式页面。</p>
+            </div>
+            <div class="links">
+                <a href="mailto:zhangsan@example.com">📧 邮箱</a>
+                <a href="https://github.com/zhangsan" target="_blank">🐙 GitHub</a>
+                <a href="#">📝 博客</a>
+            </div>
+         </section>
+
+        <!-- 技能列表：使用 Flexbox 让列表项响应式换行 -->
+         <section class="skills">
+            <h2>技能</h2>
+            <ul class="skill-flex-list">
+                <li>HTML5 & CSS3</li>
+                <li>JavaScript</li>
+                <li>React</li>
+                <li>Vue.js</li>
+                <li>Node.js</li>
+                <li>Git</li>
+                <li>Webpack</li>
+            </ul>
+         </section>
+
+        <!-- 其他内容保持不变（留言板）-->
+         <article id="guestbook">
+            <h2>留言板</h2>
+            <p>欢迎留言！</p>
+             <form action="#" method="post">
+                <div class="form-group">
+                    <label for="name">姓名：</label>
+                    <input type="text" id="name" name="name" placeholder="请输入您的姓名">
+                </div>
+                <div class="form-group">
+                    <label for="message">留言内容：</label>
+                    <input type="text" id="message" name="message" placeholder="请输入您的留言">
+                </div>
+                <button type="submit">提交留言</button>
+             </form>
+         </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 张三的个人主页</p>
+    </footer>
+</body>
+</html>

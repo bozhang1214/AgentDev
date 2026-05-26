@@ -1,0 +1,181 @@
+/* style-grid.css - 使用 CSS Grid 实现布局 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #e9f0f5;
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 网格容器 */
+.grid-container {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    background: white;
+    border-radius: 32px;
+    box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-template-areas: 
+        "avatar intro" 
+        "links  skills" 
+        "footer footer";
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+.avatar-area {
+    grid-area: avatar;
+    text-align: center;
+}
+
+.avatar-area img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #2c7da0;
+}
+
+.intro-area {
+    grid-area: intro;
+}
+
+.intro-area h1 {
+    font-size: 2.2rem;
+    color: #1e3a5f;
+    margin-bottom: 0.5rem;
+}
+
+.intro-area p {
+    line-height: 1.5;
+    color: #2c3e50;
+}
+
+.links-area {
+    grid-area: links;
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 1rem;
+}
+
+.links-area h3 {
+    margin-bottom: 0.8rem;
+    color: #0f2b3d;
+}
+
+.links-area ul {
+    list-style: none;
+}
+
+.links-area li {
+    margin: 0.8rem 0;
+}
+
+.links-area a {
+    text-decoration: none;
+    color: #2c7da0;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.links-area a:hover {
+    color: #1a4d6b;
+    padding-left: 5px;
+}
+
+.skills-area {
+    grid-area: skills;
+}
+
+.skills-area h3 {
+    margin-bottom: 0.8rem;
+    color: #0f2b3d;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill-tags span {
+    background: #e2e8f0;
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    transition: 0.1s;
+}
+
+.skill-tags span:hover {
+    background: #2c7da0;
+    color: white;
+    cursor: default;
+}
+
+.footer-area {
+    grid-area: footer;
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 0.5rem;
+    color: #5a6e7c;
+}
+
+/* 响应式调整 - 平板和手机 */
+@media (width <= 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "avatar" 
+            "intro" 
+            "links" 
+            "skills" 
+            "footer";
+        gap: 1rem;
+        padding: 1.2rem;
+    }
+
+    .avatar-area img {
+        width: 110px;
+        height: 110px;
+    }
+
+    .intro-area h1 {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .intro-area p {
+        text-align: center;
+    }
+
+    .links-area ul {
+        display: flex;
+        justify-content: center;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+    }
+
+    .links-area li {
+        margin: 0;
+    }
+    
+    .skill-tags {
+        justify-content: center;
+    }
+}

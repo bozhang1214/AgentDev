@@ -1,0 +1,43 @@
+{
+    "python.defaultInterpreterPath": "/usr/local/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironmentInCurrentTerminal": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.typeCheckingMode": "basic",
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+  // ========== 基础补全（免费，必须开启） ==========
+  "github.copilot.enableAutoCompletions": true,
+  "editor.inlineSuggest.enabled": true,
+
+  // ========== 关闭所有消耗额度的功能 ==========
+  // 关闭 Agent 总开关（如果存在）
+  "github.copilot.agent.enabled": false,
+
+  // 关闭 Chat 自动触发
+  "github.copilot.chat.autoTrigger": false,
+
+  // 关闭 Next Edit Suggestions (NES)
+  "github.copilot.nextEditSuggestions.enabled": false,
+
+  // 关闭代码审查 Agent
+  "github.copilot.codeReview.enabled": false,
+
+  // 关闭各种 Agent（根据你截图中的选项）
+  "github.copilot.chat.agent.currentEditorContext.enabled": false,
+  "github.copilot.chat.backgroundAgent.enabled": false,
+  "github.copilot.chat.claudeAgent.enabled": false,
+  "github.copilot.chat.cloudAgent.enabled": false,
+  "github.copilot.chat.reviewAgent.enabled": false,
+  "github.copilot.chat.exploreAgent.enabled": false,
+  "github.copilot.chat.switchAgent.enabled": false,
+
+  // 关闭组织自定义 Agent（如果有）
+  "github.copilot.chat.organizationCustomAgents.enabled": false,
+
+  // 关闭对话自动压缩（Agent 相关）
+  "github.copilot.chat.summarizeAgentConversationHistory.enabled": false,
+
+  // 关闭可能存在的 Copilot CLI 集成（消耗额度）
+  "github.copilot.cli.enabled": false
+}

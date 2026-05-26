@@ -1,0 +1,173 @@
+/* style-flex.css - 使用 Flexbox 实现响应式布局 */
+
+/* 全局设置 */
+* {
+    box-sizing: border-box;
+}
+body {
+    background-color: #f0f4fa;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+header {
+    background: linear-gradient(135deg, #1e2a3e, #2c3e50);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+header h1 {
+    margin: 0;
+}
+nav a {
+    color: #ecf0f1;
+    text-decoration: none;
+    margin-left: 20px;
+}
+nav a:hover {
+    text-decoration: underline;
+}
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* 个人信息卡片区域 - 关键 Flexbox 演示 */
+.profile-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.avatar {
+    flex: 0 0 auto;
+}
+.avatar img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #3498db;
+}
+.intro {
+    flex: 2;
+    min-width: 180px;
+}
+.intro h2 {
+    margin: 0 0 8px 0;
+    color: #2c3e50;
+}
+.links {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+    flex-direction: wrap;
+    justify-content: flex-end;
+}
+.links a {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.links a:hover {
+    background-color: #2980b9;
+}
+
+/* 技能列表 - 改用 Flexbox 实现响应式标签 */
+.skill-flex-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0;
+}
+.skill-flex-list li {
+    background-color: #e2e8f0;
+    padding: 8px 18px;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    transition: background 0.1s;
+}
+.skill-flex-list li:hover {
+    background-color: #3498db;
+    color: white;
+    transform: scale(1.02);
+}
+
+/* 留言板样式（来自第二天，稍加调整）*/
+#guestbook {
+    background-color: #fef9e6;
+    padding: 20px;
+    border-radius: 16px;
+    margin-top: 30px;
+    border: 1px solid #f1c40f;
+}
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+label {
+    width: 60px;
+    font-weight: bold;
+}
+input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    min-width: 160px;
+}
+button {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 16px;
+    background-color: #ffffffcc;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+/* 响应式补充：屏幕宽度小于 700px 时，个人信息卡片垂直排列 */
+@media (max-width: 700px) {
+    .profile-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    .links {
+        justify-content: center;
+    }
+    .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    nav a {
+        margin: 0 12px;
+    }
+}

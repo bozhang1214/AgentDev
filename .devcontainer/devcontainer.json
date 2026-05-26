@@ -1,0 +1,30 @@
+{
+  "name": "Agent Dev (Python + Node.js)",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "forwardPorts": [8000, 8888, 3000],
+  "remoteUser": "vscode",
+  "postCreateCommand": "sudo update-alternatives --install /usr/bin/python python /usr/local/bin/python 1 && sudo update-alternatives --set python /usr/local/bin/python && pip install --upgrade pip && pip install --timeout 120 --retries 5 -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt && (test -d web && npm install --prefix web || true)",
+  "postStartCommand": "echo 'Using Python: ' && which python",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.languageServer": "Pylance",
+        "terminal.integrated.shell.linux": "/bin/bash"
+      }
+    }
+  }
+}

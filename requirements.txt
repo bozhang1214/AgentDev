@@ -1,0 +1,16 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+langchain>=0.3.0
+langchain-community>=0.3.0
+langchain-openai>=0.2.0
+crewai>=0.80.0
+chromadb>=1.1.0
+sentence-transformers>=3.0.0
+pypdf>=4.0.0
+tiktoken>=0.7.0
+aiohttp>=3.10.0
+python-dotenv>=1.0.0
+python-multipart>=0.0.12
+jupyterlab>=4.2.0
+ipywidgets>=8.1.0
+httpx>=0.27.0

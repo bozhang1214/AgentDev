@@ -1,0 +1,22 @@
+services:
+  agent:
+    build: . # 使用当前目录的 Dockerfile 构建镜像
+    image: agent-dev:latest # 构建后生成的镜像标签（可选）
+    container_name: agent_container
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./backend:/workspace/backend
+      - ./data:/workspace/data
+      - ./notebooks:/workspace/notebooks
+      - ./scripts:/workspace/scripts
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+    environment:
+      - PYTHONPATH=/workspace
+    command: >
+      sh -c "uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload"
+    restart: unless-stopped
