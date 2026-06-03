@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>第3天：Fetch API 实践 - GitHub 用户查询</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+            .card {
+                background: white;
+                border-radius: 24px;
+                padding: 32px;
+                max-width: 500px;
+                width: 100%;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            }
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 8px;
+                color: #333;
+            }
+            .subtitle {
+                color: #666;
+                margin-bottom: 24px;
+                font-size: 0.9rem;
+            }
+            .search-area {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 24px;
+            }
+            input {
+                flex: 1;
+                padding: 12px 16px;
+                border: 2px solid #e0e0e0;
+                border-radius: 12px;
+                font-size: 1rem;
+                transition: border-color 0.2s;
+            }
+            input:focus {
+                outline: none;
+                border-color: #667eea;
+            }
+            button {
+                padding: 12px 24px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-size: 1rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: transform 0.1s, opacity 0.2s;
+            }
+            button:hover {
+                opacity: 0.9;
+            }
+            button:active {
+                transform: scale(0.98);
+            }
+            .loading {
+                text-align: center;
+                padding: 40px;
+                color: #667eea;
+                font-size: 1.2rem;
+            }
+            .error {
+                background: #fee2e2;
+                color: #dc2626;
+                padding: 12px;
+                border-radius: 12px;
+                margin-bottom: 16px;
+            }
+            .user-info {
+                display: none;
+            }
+            .user-info.show {
+                display: block;
+            }
+            .avatar {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .avatar img {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                border: 4px solid #667eea;
+            }
+            .info-item {
+                padding: 12px 0;
+                border-bottom: 1px solid #eee;
+                display: flex;
+                justify-content: space-between;
+            }
+            .info-label {
+                font-weight: 600;
+                color: #555;
+            }
+            .info-value {
+                color: #333;
+            }
+            .info-value a {
+                color: #667eea;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h1>🔍 GitHub 用户查询</h1>
+            <p class="subtitle">输入GitHub用户名，查看用户信息</p>
+            <div class="search-area">
+                <input type="text" id="usernameInput" placeholder="例如：octocat" value="octocat">
+                <button id="searchBtn">查询</button>
+            </div>
+            <div id="loading" class="loading" style="display: none;">
+                ⏳ 加载中...
+            </div>
+            <div id="errorMsg" class="error" style="display: none;"></div>
+            <div id="userInfo" class="user-info">
+                <div class="avatar">
+                    <img id="avatar" src="" alt="头像">
+                </div>
+                <div class="info-item">
+                    <span class="info-label">用户名</span>
+                    <span id="login" class="info-value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">姓名</span>
+                    <span id="name" class="info-value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">GitHub链接</span>
+                    <span id="htmlUrl" class="info-value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">粉丝数</span>
+                    <span id="followers" class="info-value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">关注数</span>
+                    <span id="following" class="info-value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">公开仓库</span>
+                    <span id="repos" class="info-value"></span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const usernameInput = document.getElementById("usernameInput");
+            const searchBtn = document.getElementById("searchBtn");
+            const loadingDiv = document.getElementById("loading");
+            const errorDiv = document.getElementById("errorMsg");
+            const userInfoDiv = document.getElementById("userInfo");
+
+            const avatarImg = document.getElementById("avatar");
+            const loginSpan = document.getElementById("login");
+            const nameSpan = document.getElementById("name");
+            const htmlUrlSpan = document.getElementById("htmlUrl");
+            const followersSpan = document.getElementById("followers");
+            const followingSpan = document.getElementById("following");
+            const reposSpan = document.getElementById("repos");
+
+            function showLoading() {
+                loadingDiv.style.display = "block";
+                errorDiv.style.display = "none";
+                userInfoDiv.classList.remove("show");
+            }
+
+            function hideLoading() {
+                loadingDiv.style.display = "none";
+            }
+
+            function showError(message) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = "block";
+                userInfoDiv.classList.remove("show");
+            }
+
+            function displayUserInfo(data) {
+                avatarImg.src = data.avatar_url;
+                loginSpan.textContent = data.login;
+                nameSpan.textContent = data.name || "暂无";
+                htmlUrlSpan.innerHTML = `<a href="${data.html_url}" target="_blank">${data.html_url}</a>`;
+                followersSpan.textContent = data.followers;
+                followingSpan.textContent = data.following;
+                reposSpan.textContent = data.public_repos;
+
+                userInfoDiv.classList.add("show");
+            }
+
+            async function fetchGitHubUser(username) {
+                if (!username.trim()) {
+                    showError("请输入 GitHub 用户名");
+                    return;
+                }
+                showLoading();
+                try {
+                    const response = await fetch(`https://api.github.com/users/${username}`);
+
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error(`用户 "${username}" 不存在`);
+                        } else if (response.status === 403) {
+                            throw new Error("API 请求过于频繁，请稍后再试");
+                        } else {
+                            throw new Error(`请求失败：${response.status}`);
+                        }
+                    }
+
+                    const data = await response.json();
+                    hideLoading();
+                    displayUserInfo(data);
+
+                    console.log("获取到用户信息：", data);
+                    console.log(`Token 统计提醒：这是一个免费API， 无Token计费`);
+                } catch (error) {
+                    hideLoading();
+                    showError(`❌ ${error.message}`);
+                    console.error("Fetch 错误：", error);
+                }
+            }
+
+            searchBtn.addEventListener("click", () => {
+                fetchGitHubUser(usernameInput.value);
+            });
+
+            usernameInput.addEventListener("keypress", (event) => {
+                if (event.key == "Enter") {
+                    fetchGitHubUser(usernameInput.value);
+                }
+            });
+
+            fetchGitHubUser("octocat");
+        </script>
+    </body>
+</html>
