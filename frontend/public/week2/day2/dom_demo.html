@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM 操作实践 - 第2天</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        button {
+            margin: 0.2rem;
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
+        }
+
+        .demo-section {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+
+        .demo-section h3 {
+            margin-top: 0;
+        }
+
+        .dark-theme {
+            background-color: #1e1e2f;
+            color: #eee;
+        }
+
+        .dark-theme button {
+            background-color: #444;
+            color: white;
+            border: none;
+        }
+
+        .dark-theme .demo-section {
+            border-color: #555;
+        }
+
+        .delete-btn {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>第2天：DOM 操作练习</h1>
+    <div class="demo-section">
+        <h3>📝 示例1：点击按钮修改文字</h3>
+        <p id="message">欢迎学习DOM操作</p>
+        <button id="changeTextBtn">点我修改</button>
+    </div>
+
+    <div class="demo-section">
+        <h3>➕ 示例2：动态添加/删除列表项</h3>
+        <input type="text" id="newItemInput" placeholder="输入新任务">
+        <button id="addItemBtn">添加</button>
+        <ul id="todoList">
+            <li>学习 HTML <button class="delete-btn">删除</button></li>
+            <li>学习 CSS <button class="delete-btn">删除</button></li>
+            <li>学习 JavaScript <button class="delete-btn">删除</button></li>
+        </ul>
+        <p><small>点击每项旁边的“删除”按钮可移除该项</small></p>
+    </div>
+
+    <div class="demo-section">
+        <h3>🎨 示例3：切换深色/浅色主题</h3>
+        <button id="toggleThemeBtn">🌙 切换深色主题</button>
+    </div>
+
+    <script>
+        const messagePara = document.getElementById("message");
+        const changeBtn = document.getElementById("changeTextBtn");
+        changeBtn.addEventListener("click", () => {
+            messagePara.textContent = "你已经学会了事件监听！";
+            // messagePara.innerHTML = "你已经学会了<strong>事件监听</strong>！"
+        });
+
+        const todoList = document.getElementById("todoList");
+        const addBtn = document.getElementById("addItemBtn");
+        const newItemInput = document.getElementById("newItemInput");
+        function attachDeleteEvent(li, deleteBtn) {
+            deleteBtn.addEventListener("click", () => {
+                li.remove();
+            });
+        }
+
+        const existingItems = document.querySelectorAll("#todoList li");
+        existingItems.forEach(item => {
+            const delBtn = item.querySelector(".delete-btn");
+            if (delBtn) {
+                attachDeleteEvent(item, delBtn);
+            }
+        });
+        addBtn.addEventListener("click", () => {
+            const newText = newItemInput.value.trim();
+            if (newText === "") {
+                alert("请输入内容后再添加！");
+                return;
+            }
+            const newLi = document.createElement("li");
+            newLi.textContent = newText;
+            const delBtn = document.createElement("button");
+            delBtn.textContent = "删除";
+            delBtn.classList.add("delete-btn");
+            newLi.appendChild(delBtn);
+            todoList.appendChild(newLi);
+            attachDeleteEvent(newLi, delBtn);
+            newItemInput.value = "";
+        });
+        newItemInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                addBtn.click();
+            }
+        });
+
+        const toggleThemeBtn = document.getElementById("toggleThemeBtn");
+        let isDark = false;
+        toggleThemeBtn.addEventListener("click", () => {
+            document.body.classList.toggle("dark-theme");
+            if (document.body.classList.contains("dark-theme")) {
+                toggleThemeBtn.textContent = "☀️ 切换浅色主题";
+            } else {
+                toggleThemeBtn.textContent = "🌙 切换深色主题";
+            }
+        });
+    </script>
+</body>
+</html>
