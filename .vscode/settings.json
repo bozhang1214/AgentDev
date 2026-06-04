@@ -6,6 +6,12 @@
     "python.analysis.diagnosticMode": "workspace",
     "python.analysis.typeCheckingMode": "basic",
     "python-envs.defaultEnvManager": "ms-python.python:system",
+    "remote.containers.copyGitConfig": true,
+    "remote.containers.defaultExtensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter"
+    ],
   // ========== 基础补全（免费，必须开启） ==========
   "github.copilot.enableAutoCompletions": true,
   "editor.inlineSuggest.enabled": true,
