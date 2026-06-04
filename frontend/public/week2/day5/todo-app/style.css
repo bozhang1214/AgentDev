@@ -1,0 +1,230 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(145deg, #f0f4fa 0%, #d9e2ec 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    width: 100%;
+    background: white;
+    border-radius: 32px;
+    box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    padding: 24px 20px 20px 20px;
+    transition: all 0.2s;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+h1 {
+    font-size: 1.8rem;
+    color: #1e2a3e;
+}
+
+.subtitle {
+    color: #5a6e7c;
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+.input-area {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+#taskInput {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 40px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#taskInput:focus {
+    border-color: #4f46e5;
+}
+
+#addBtn {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 40px;
+    padding: 0 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+#addBtn:hover {
+    background: #4338ca;
+}
+
+#addBtn:active {
+    transform: scale(0.96);
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    background: #f8fafc;
+    padding: 10px 16px;
+    border-radius: 40px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    color: #334155;
+}
+
+.task-list {
+    list-style: none;
+    margin: 0 0 20px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    border: 1px solid #eef2f6;
+    border-radius: 60px;
+    padding: 8px 12px 8px 20px;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.task-item:hover {
+    border-color: #cbd5e1;
+    background: #fefefe;
+}
+
+.task-text {
+    flex: 1;
+    font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+    padding: 6px 0;
+    word-break: break-word;
+    transition: all 0.2s;
+}
+
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    color: #94a3b8;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #cbd5e1;
+    border-radius: 40px;
+    width: 36px;
+    height: 36px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-btn:hover {
+    background-color: #fee2e2;
+    color: #e11d48;
+}
+
+footer {
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.75rem;
+    margin-top: 16px;
+    border-top: 1px solid #edf2f7;
+    padding-top: 16px;
+}
+
+.task-item.removing {
+    animation: slideOut 0.3s ease-out forwards;
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 12px 24px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast-info {
+    background: #4f46e5;
+}
+
+.toast-error {
+    background: #e11d48;
+}
+
+.toast-success {
+    background: #10b981;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 16px;
+    }
+    .input-area {
+        flex-direction: column;
+        gap: 8px;
+    }
+    #addBtn {
+        padding: 10px;
+    }
+    .task-item {
+        padding: 6px 10px 6px 16px;
+    }
+    .toast {
+        padding: 10px 16px;
+        font-size: 0.8rem;
+        bottom: 16px;
+    }
+}

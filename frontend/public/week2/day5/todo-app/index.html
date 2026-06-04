@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <title>✅ 待办应用 | 本地存储</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <div class="container">
+            <header>
+                <h1>📝 我的待办清单</h1>
+                <p class="subtitle">添加任务 · 标记完成 · 删除任务</p>
+            </header>
+
+            <div class="input-area">
+                <input type="text" id="taskInput" placeholder="写一个待办事项..." autocomplete="off">
+                <button id="addBtn">➕ 添加</button>
+            </div>
+
+            <div class="stats">
+                <span>总计：<span id="totalCount">0</span></span>
+                <span>已完成：<span id="completedCount">0</span></span>
+            </div>
+
+            <ul id="taskList" class="task-list">
+
+            </ul>
+
+            <footer>
+                <small>💡 点击任务文本可切换完成状态 | 点击右侧「删除」移除任务</small>
+            </footer>
+
+            <script src="app.js"></script>
+        </div>
+    </body>
+</html>
