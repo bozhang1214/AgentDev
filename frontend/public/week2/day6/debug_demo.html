@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>调试示例 - 计算器</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 2rem;
+        }
+
+        input,
+        button {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        .result {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>简易加法器（有bug）</h2>
+    <input type="number" id="num1" placeholder="第一个数字">
+    <input type="number" id="num2" placeholder="第二个数字">
+    <button id="calcBtn">计算和</button>
+    <div class="result" id="result"></div>
+
+    <script>
+        // 目标：点击按钮后显示两个数字的和
+        // 当前代码有 bug：结果是字符串拼接，而不是数值相加
+        const btn = document.getElementById('calcBtn');
+        const resultDiv = document.getElementById('result');
+
+        function add(a, b) {
+            return a + b;   // 这里的问题：如果 a 和 b 是字符串，会拼接
+        }
+
+        btn.addEventListener('click', () => {
+            const num1 = Number(document.getElementById('num1').value);
+            const num2 = Number(document.getElementById('num2').value);
+            const sum = add(num1, num2);
+            resultDiv.textContent = `结果：${sum}`;
+        });
+    </script>
+</body>
+
+</html>
