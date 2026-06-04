@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-        <title>✅ 待办应用 | 本地存储</title>
+        <title>✅ 待办应用 Pro | 编辑/筛选/本地存储</title>
         <link rel="stylesheet" href="style.css">
     </head>
 
@@ -11,7 +11,7 @@
         <div class="container">
             <header>
                 <h1>📝 我的待办清单</h1>
-                <p class="subtitle">添加任务 · 标记完成 · 删除任务</p>
+                <p class="subtitle">添加任务 · 标记完成 · 删除任务 | 双击任务可编辑 · 智能统计</p>
             </header>
 
             <div class="input-area">
@@ -19,20 +19,28 @@
                 <button id="addBtn">➕ 添加</button>
             </div>
 
+            <div class="filter-bar">
+                <div class="filter-buttons">
+                    <button data-filter="all" class="filter-btn active">全部</button>
+                    <button data-filter="active" class="filter-btn">未完成</button>
+                    <button data-filter="completed" class="filter-btn">已完成</button>
+                </div>
+                <button id="clearCompletedBtn" class="clear-btn">🗑️ 清除已完成</button>
+            </div>
+
             <div class="stats">
                 <span>总计：<span id="totalCount">0</span></span>
+                <span>未完成：<span id="activeCount">0</span></span>
                 <span>已完成：<span id="completedCount">0</span></span>
             </div>
 
-            <ul id="taskList" class="task-list">
-
-            </ul>
+            <ul id="taskList" class="task-list"></ul>
 
             <footer>
-                <small>💡 点击任务文本可切换完成状态 | 点击右侧「删除」移除任务</small>
+                <small>💡 单击文本切换完成状态 | 双击文本编辑 | 右侧删除按钮移除任务</small>
             </footer>
-
-            <script src="app.js"></script>
         </div>
+        
+        <script src="app.js"></script>
     </body>
 </html>

@@ -3,9 +3,13 @@
     const addBtn = document.getElementById('addBtn');
     const taskList = document.getElementById('taskList');
     const totalCountSpan = document.getElementById('totalCount');
+    const activeCountSpan = document.getElementById('activeCount');
     const completedCountSpan = document.getElementById('completedCount');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const clearCompletedBtn = document.getElementById('clearCompletedBtn');
 
     let tasks = [];
+    let filterType = 'all';
 
     function generateId() {
         return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -13,9 +17,54 @@
 
     function updateStats() {
         const total = tasks.length;
+        const active = tasks.filter(task => !task.completed).length;
         const completed = tasks.filter(task => task.completed).length;
         totalCountSpan.textContent = total;
+        activeCountSpan.textContent = active;
         completedCountSpan.textContent = completed;
+    }
+
+    function getFilteredTasks() {
+        if (filterType === 'active') {
+            return tasks.filter(task => !task.completed);
+        } else if (filterType === 'completed') {
+            return tasks.filter(task => task.completed);
+        } else {
+            return [...tasks];
+        }
+    }
+
+    function startEdit(tastElement, taskId) {
+        const textSpan = tastElement.querySelector('.task-text');
+        const originalText = textSpan.textContent;
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = originalText;
+        input.className = 'edit-input';
+
+        textSpan.style.display = 'none';
+        textSpan.parentNode.insertBefore(input, textSpan);
+        input.focus();
+
+        const finishEdit = () => {
+            const newText = input.value.trim();
+            if (newText !== '') {
+                const task = tasks.find(t => t.id === taskId);
+                if (task) task.text = newText;
+                saveToLocalStorage();
+            }
+            input.remove();
+            textSpan.style.display = '';
+            renderTasks();
+        };
+
+        input.addEventListener('blur', finishEdit);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                finishEdit();
+            }
+        });
     }
 
     function saveToLocalStorage() {
@@ -79,18 +128,41 @@
     function renderTasks() {
         if (!taskList) return;
         taskList.innerHTML = '';
+        const filtered = getFilteredTasks();
 
-        if (tasks.length === 0) {
-            const emptyMsg = document.createElement('li');
-            emptyMsg.className = 'empty-message';
-            emptyMsg.textContent = '✨ 暂无任务，添加一条吧！';
-            emptyMsg.style.textAlign = 'center';
-            emptyMsg.style.padding = '32px';
-            emptyMsg.style.color = '#94a3b8';
-            taskList.appendChild(emptyMsg);
+        if (filtered.length === 0) {
+            const emptyLi = document.createElement('li');
+            emptyLi.className = 'empty-message';
+            emptyLi.textContent = filterType === 'all' ? '✨ 暂无任务，添加一条吧！' : (filterType === 'active' ? '✅ 所有任务都已完成！' : '📭 还没有已完成的任务');
+            taskList.appendChild(emptyLi);
         } else {
-            tasks.forEach(task => {
-                taskList.appendChild(createTaskElement(task));
+            filtered.forEach(task => {
+                const li = document.createElement('li');
+                li.className = `task-item ${task.completed ? 'completed' : ''}`;
+                li.dataset.id = task.id;
+
+                const textSpan = document.createElement('span');
+                textSpan.className = 'task-text';
+                textSpan.textContent = task.text;
+                textSpan.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleTask(task.id);
+                });
+                textSpan.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    startEdit(li, task.id);
+                });
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-btn';
+                delBtn.textContent = '🗑️';
+                delBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteTask(task.id);
+                });
+                li.appendChild(textSpan);
+                li.appendChild(delBtn);
+                taskList.appendChild(li);
             });
         }
         updateStats();
@@ -183,6 +255,24 @@
         }
     }
 
+    function clearCompleted() {
+        tasks = tasks.filter(task => !task.completed);
+        saveToLocalStorage();
+        renderTasks();
+    }
+
+    function setFilter(type) {
+        filterType = type;
+        filterBtns.forEach(btn => {
+            if (btn.dataset.filter === type) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        renderTasks();
+    }
+
     function bindEvents() {
         addBtn.addEventListener('click', addTask);
         taskInput.addEventListener('keypress', (e) => {
@@ -190,11 +280,19 @@
                 addTask();
             }
         });
+        clearCompletedBtn.addEventListener('click', clearCompleted);
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setFilter(btn.dataset.filter);
+            });
+        });
     }
 
     function init() {
-        bindEvents();
         loadFromLocalStorage();
+        bindEvents();
+        setFilter('all');
+        renderTasks();
     }
 
     init();
