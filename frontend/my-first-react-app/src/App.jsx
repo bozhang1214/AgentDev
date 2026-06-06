@@ -1,6 +1,7 @@
 // import Counter from "./Counter";
 // import TodoInput from "./TodoInput";
 
+import Chat from "./Chat";
 import TodoApp from "./TodoApp";
 
 // function Welcome(props) {
@@ -38,10 +39,20 @@ import TodoApp from "./TodoApp";
 //     );
 // }
 
+// function App() {
+//     return (
+//         <div>
+//             <TodoApp />
+//         </div>
+//     );
+// }
+
 function App() {
     return (
         <div>
             <TodoApp />
+            <hr style={{ margin: '40px 0'}}/>
+            <Chat />
         </div>
     );
 }

@@ -2,3 +2,4 @@ data/
 node_modules/
 .env
 
+/backend/week3/day3/__pycache__
