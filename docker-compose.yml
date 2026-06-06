@@ -1,22 +1,49 @@
 services:
-  agent:
-    build: . # 使用当前目录的 Dockerfile 构建镜像
-    image: agent-dev:latest # 构建后生成的镜像标签（可选）
-    container_name: agent_container
+  # Python 后端服务（使用你现有的 Dockerfile）
+  backend:
+    build: . # 使用当前目录的 Dockerfile
+    image: agent-dev:latest
+    container_name: backend_container
     env_file:
       - .env
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ./backend:/workspace/backend
+      - ./backend:/workspace/backend # 挂载后端代码
       - ./data:/workspace/data
       - ./notebooks:/workspace/notebooks
       - ./scripts:/workspace/scripts
     ports:
-      - "8000:8000"
-      - "8888:8888"
+      - "8000:8000" # FastAPI 端口
+      - "8888:8888" # Jupyter Lab 端口
     environment:
       - PYTHONPATH=/workspace
     command: >
       sh -c "uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload"
     restart: unless-stopped
+    networks:
+      - agent-network
+
+  # React 前端服务（新增）
+  frontend:
+    image: node:20-alpine
+    container_name: frontend_container
+    working_dir: /app
+    volumes:
+      - ./frontend:/app # 将宿主机 frontend 目录挂载到容器内
+    ports:
+      - "3000:3000" # React 开发服务器端口
+    environment:
+      - CHOKIDAR_USEPOLLING=true # 必须：确保文件变更被监听到（热重载）
+      - WATCHPACK_POLLING=true # 可选：Webpack 5+ 热重载
+      - FAST_REFRESH=false # 某些环境下需要关掉快速刷新避免冲突（可选）
+    stdin_open: true
+    tty: true
+    command: sh -c "npm install && npm start"
+    restart: unless-stopped
+    networks:
+      - agent-network
+
+networks:
+  agent-network:
+    driver: bridge

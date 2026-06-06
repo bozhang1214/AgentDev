@@ -1,0 +1,16 @@
+{
+  "name": "Backend Dev (Python)",
+  "dockerComposeFile": ["../../docker-compose.yml"],   // 引用根目录的 compose 文件
+  "service": "backend",                                 // 对应 compose 中的服务名
+  "workspaceFolder": "/workspace/backend",
+  "shutdownAction": "none",                             // 不要关闭容器（因为可能被其他窗口使用）
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Scripts Dev (Python)",
+  "dockerComposeFile": ["../../docker-compose.yml"],
+  "service": "backend",
+  "workspaceFolder": "/workspace/scripts",
+  "shutdownAction": "none"
+}
