@@ -1,15 +1,17 @@
-import Counter from "./Counter";
-import TodoInput from "./TodoInput";
+// import Counter from "./Counter";
+// import TodoInput from "./TodoInput";
 
-function Welcome(props) {
-    return (
-        <div style={{border: "1px solid #ccc", padding: "20px", borderRadius: "8px", textAlign: "center"}}>
-            <h1>欢迎， {props.name}!</h1>
-            <p>今天是 {new Date().toLocaleDateString()}</p>
-            {props.children && <div>{props.children}</div>}
-        </div>
-    );
-}
+import TodoApp from "./TodoApp";
+
+// function Welcome(props) {
+//     return (
+//         <div style={{border: "1px solid #ccc", padding: "20px", borderRadius: "8px", textAlign: "center"}}>
+//             <h1>欢迎， {props.name}!</h1>
+//             <p>今天是 {new Date().toLocaleDateString()}</p>
+//             {props.children && <div>{props.children}</div>}
+//         </div>
+//     );
+// }
 
 // function App() {
 //     return (
@@ -27,11 +29,19 @@ function Welcome(props) {
 //     );
 // }
 
+// function App() {
+//     return (
+//         <div>
+//             <Counter />
+//             <TodoInput />
+//         </div>
+//     );
+// }
+
 function App() {
     return (
         <div>
-            <Counter />
-            <TodoInput />
+            <TodoApp />
         </div>
     );
 }
