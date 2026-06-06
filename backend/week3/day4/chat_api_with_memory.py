@@ -1,8 +1,8 @@
 from email import message
 import os
 import uuid
-from typing import Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -26,7 +26,7 @@ SYSTEM_PROMPT = "你是一个友好的、专业的 AI 助手，请用中文回�
 
 class ChatRequest(BaseModel):
     message: str
-    session_id: Optional[str] = None
+    session_id: str | None = None
 
 class ChatResponse(BaseModel):
     reply: str
@@ -35,7 +35,15 @@ class ChatResponse(BaseModel):
 
 app = FastAPI(title="带记忆的聊天API")
 
-def get_or_create_session(session_id: Optional[str] = None) -> tuple[str, list]:
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
+def get_or_create_session(session_id: str | None = None) :
     """获取会话历史，若不存在则创建新会话"""
     if session_id is None or session_id not in sessions:
         new_id = str(uuid.uuid4())
@@ -76,6 +84,12 @@ async def chat(request: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+@app.get("/history/{session_id}")
+def get_history(session_id: str):
+    if session_id not in sessions:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return {"session_id": session_id, "history": sessions[session_id]}
+
 @app.get("/")
 def root():
     return {"message": "Chat API with memory is running", "active_sessions": len(sessions)}
