@@ -5,6 +5,7 @@ function Chat() {
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [retryCount, setRetryCount] = useState(0);
 
     const [sessionId, setSessionId] = useState(() => {
         const saved = localStorage.getItem('chat_session_id');
@@ -26,6 +27,9 @@ function Chat() {
         setIsLoading(true);
         setError(null);
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
         try {
             const response = await fetch('http://localhost:8001/chat', {
                 method: 'POST',
@@ -33,8 +37,11 @@ function Chat() {
                 body: JSON.stringify({
                     message: userMessage,
                     session_id: sessionId,
-                })
+                }),
+                signal: controller.signal,
             });
+
+            clearTimeout(timeoutId);
 
             if (!response.ok) {
                 // 尝试读取响应文本而不是直接解析 JSON（防止非 JSON 响应）
@@ -59,8 +66,17 @@ function Chat() {
                 setSessionId(data.session_id)
             }
         } catch (err) {
-            console.error('聊天请求失败：', err);
-            setError(err.message);
+            if (err.name === 'AbortError') {
+                setError('请求超时，请检查后端服务是否正常运行。')
+            } else {
+                setError(err.meesage);
+            }
+            if (retryCount === 0 && err.name !== 'AbortError') {
+                console.log('自动重试...');
+                setRetryCount(1);
+                setTimeout(() => sendMessage(1), 2000);
+                return;
+            }
         } finally {
             setIsLoading(false);
         }
@@ -135,8 +151,9 @@ function Chat() {
             </div>
 
             {error && (
-                <div style={{ color: 'red', fontSize: '14px', marginBottom: '8px'}}>
-                    错误: {error}
+                <div style={{ color: 'red', fontSize: '14px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                    <span>错误: {error}</span>
+                    <button onClick={() => sendMessage()} style={{fontSize: '12px'}}>重试</button>
                 </div>
             )}
 

@@ -7,9 +7,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
+from fastapi import Request
+from fastapi.responses import JSONResponse
 
 BASE_URL = "https://api.deepseek.com"
 MODEL = "deepseek-v4-flash"
+MAX_HISTORY_LENGTH = 40
 
 load_dotenv()
 api_key = os.getenv("DEEPSEEK_API_KEY")
@@ -66,7 +69,8 @@ async def chat(request: ChatRequest):
         response = client.chat.completions.create(
             model=MODEL,
             messages=messages,
-            temperature=0.7
+            temperature=0.7,
+            timeout=10.0
         )
 
         reply = response.choices[0].message.content
@@ -77,6 +81,8 @@ async def chat(request: ChatRequest):
         }
         sessions[sess_id].append({"role": "user", "content": request.message})
         sessions[sess_id].append({"role": "assistant", "content": reply})
+        if len(sessions[sess_id]) > MAX_HISTORY_LENGTH:
+            sessions[sess_id] = sessions[sess_id][-MAX_HISTORY_LENGTH]
         return ChatResponse(
             reply=reply,
             session_id=sess_id,
@@ -135,3 +141,10 @@ def delete_todo(session_id: str, todo_id: int):
         todo_storage[session_id] = [t for t in todo_storage[session_id] if t["id"] != todo_id]
         return {"message": "deleted"}
     raise HTTPException(status_code=404, detail="Session not found")
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"服务器内部错误：{str(exc)}"}
+    )
