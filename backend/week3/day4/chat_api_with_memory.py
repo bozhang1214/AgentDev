@@ -1,3 +1,4 @@
+from datetime import datetime
 from email import message
 import os
 import uuid
@@ -102,3 +103,35 @@ def delete_session(session_id: str):
         return {"message": f"Session {session_id} deleted"}
     else:
         raise HTTPException(status_code=404, detail="Session not fount!")
+
+todo_storage = {}
+
+class TodoItem(BaseModel):
+    id: int
+    text: str
+    completed: bool = False
+
+class TodoCreate(BaseModel):
+    session_id: str
+    text:str
+
+@app.post("/todos", response_model=TodoItem)
+def create_todo(todo: TodoCreate):
+    if todo.session_id not in todo_storage:
+        todo_storage[todo.session_id] = []
+
+    new_id = int(datetime.now().timestamp() * 1000)
+    new_todo = {"id": new_id, "text": todo.text, "completed": False}
+    todo_storage[todo.session_id].append(new_todo)
+    return new_todo
+
+@app.get("/todos/{session_id}")
+def get_todos(session_id: str):
+    return todo_storage.get(session_id, [])
+
+@app.delete("/todos/{session_id}/{todo_id}")
+def delete_todo(session_id: str, todo_id: int):
+    if session_id in todo_storage:
+        todo_storage[session_id] = [t for t in todo_storage[session_id] if t["id"] != todo_id]
+        return {"message": "deleted"}
+    raise HTTPException(status_code=404, detail="Session not found")

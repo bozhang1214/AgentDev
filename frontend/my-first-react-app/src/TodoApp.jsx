@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function TodoApp() {
-    const [tasks, setTasks] = useState([
-        {id: 1, text: '学习React基础知识', completed: true},
-        {id: 2, text: '完成待办应用项目', completed: false},
-        {id: 3, text: '阅读《React前端设计》第4章', completed: false}
-    ]);
+    const [tasks, setTasks] = useState(() => {
+        const saved = localStorage.getItem('todo_tasks');
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        return [
+            {id: 1, text: '学习React基础知识', completed: true},
+            {id: 2, text: '完成待办应用项目', completed: false},
+            {id: 3, text: '阅读《React前端设计》第4章', completed: false}
+        ];
+    });
+
     const [inputValue, setInputValue] = useState('');
+
+    useEffect(() => {
+        localStorage.setItem('todo_tasks', JSON.stringify(tasks));
+    }, [tasks]);
 
     const addTask = () => {
         const trimmedText = inputValue.trim();
@@ -25,15 +36,13 @@ function TodoApp() {
     };
 
     const deleteTask = (id) => {
-        const newTasks = tasks.filter((task) => task.id !== id);
-        setTasks(newTasks);
+        setTasks(tasks.filter(task => task.id !== id));
     };
 
     const toggleTask = (id) => {
-        const newTasks = tasks.map(
-            (task) => task.id === id ? {...task, completed: !task.completed } : task
-        );
-        setTasks(newTasks);
+        setTasks(tasks.map(task =>
+            task.id === id ? { ...task, completed: !task.completed } : task
+        ));
     };
 
     return (

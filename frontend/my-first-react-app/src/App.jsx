@@ -1,8 +1,8 @@
 // import Counter from "./Counter";
 // import TodoInput from "./TodoInput";
 
-import Chat from "./Chat";
-import TodoApp from "./TodoApp";
+// import Chat from "./Chat";
+// import TodoApp from "./TodoApp";
 
 // function Welcome(props) {
 //     return (
@@ -47,12 +47,47 @@ import TodoApp from "./TodoApp";
 //     );
 // }
 
+// function App() {
+//     return (
+//         <div>
+//             <TodoApp />
+//             <hr style={{ margin: '40px 0'}}/>
+//             <Chat />
+//         </div>
+//     );
+// }
+
+
+import { useState } from 'react';
+import './App.css';
+import Chat from './Chat';
+import TodoApp from './TodoApp';
+
 function App() {
+    const [activeTab, setActiveTab] = useState('todo');
+
     return (
-        <div>
-            <TodoApp />
-            <hr style={{ margin: '40px 0'}}/>
-            <Chat />
+        <div className='app-container'>
+            <h1>🛠️ 个人工具页</h1>
+
+            <div className='tab-bar'>
+                <button 
+                    className={`tab-btn ${activeTab === 'todo' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('todo')}
+                >
+                    📝 待办清单
+                </button>
+                <button
+                    className={`tab-btn ${activeTab === 'chat' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('chat')}
+                >
+                    🤖 AI 助手
+                </button>
+            </div>
+
+            <div className='tab-content'>
+                {activeTab === 'todo' ? <TodoApp /> : <Chat />}
+            </div>
         </div>
     );
 }
