@@ -18,6 +18,15 @@ function Chat() {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
+    useEffect(() => {
+        localStorage.setItem('chat_session_id', sessionId);
+    }, [sessionId]);
+
+    const inputRef = new useRef(null);
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
+
     const sendMessage = async () => {
         const userMessage = inputValue.trim();
         if (userMessage === '') return;
@@ -65,6 +74,7 @@ function Chat() {
             if (data.session_id && data.session_id !== sessionId) {
                 setSessionId(data.session_id)
             }
+            inputRef.current?.focus();
         } catch (err) {
             if (err.name === 'AbortError') {
                 setError('请求超时，请检查后端服务是否正常运行。')
@@ -159,6 +169,7 @@ function Chat() {
 
             <div style={{ display: 'flex', gap: '8px'}}>
                 <input
+                    ref={inputRef}
                     type='text'
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}

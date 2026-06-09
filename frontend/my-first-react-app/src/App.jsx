@@ -61,6 +61,7 @@
 import { useState } from 'react';
 import './App.css';
 import Chat from './Chat';
+import TimerControl from './TimerControl';
 import TodoApp from './TodoApp';
 
 function App() {
@@ -88,6 +89,7 @@ function App() {
             <div className='tab-content'>
                 {activeTab === 'todo' ? <TodoApp /> : <Chat />}
             </div>
+            <TimerControl />
         </div>
     );
 }

@@ -1,23 +1,40 @@
 import { useEffect, useState } from "react";
+import Counter from "./Counter";
 
 function TodoApp() {
-    const [tasks, setTasks] = useState(() => {
-        const saved = localStorage.getItem('todo_tasks');
-        if (saved) {
-            return JSON.parse(saved);
-        }
-        return [
-            {id: 1, text: '学习React基础知识', completed: true},
-            {id: 2, text: '完成待办应用项目', completed: false},
-            {id: 3, text: '阅读《React前端设计》第4章', completed: false}
-        ];
-    });
-
+    // const [tasks, setTasks] = useState(() => {
+    //     const saved = localStorage.getItem('todo_tasks');
+    //     if (saved) {
+    //         return JSON.parse(saved);
+    //     }
+    //     return [
+    //         {id: 1, text: '学习React基础知识', completed: true},
+    //         {id: 2, text: '完成待办应用项目', completed: false},
+    //         {id: 3, text: '阅读《React前端设计》第4章', completed: false}
+    //     ];
+    // });
+    const [tasks, setTasks] = useState([]);
     const [inputValue, setInputValue] = useState('');
+    const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
-        localStorage.setItem('todo_tasks', JSON.stringify(tasks));
-    }, [tasks]);
+        const saved = localStorage.getItem('todo_tasks');
+        if (saved) {
+            setTasks(JSON.parse(saved));
+        } else {
+            setTasks([
+                { id: 1, text: '学习 React 基础知识', completed: true},
+                { id: 2, text: '完成待办应用项目', completed: false },
+            ]);
+        }
+        setIsInitialized(true);
+    }, []);
+
+    useEffect(() => {
+        if (isInitialized) {
+            localStorage.setItem('todo_tasks', JSON.stringify(tasks));
+        }
+    }, [tasks, isInitialized]);
 
     const addTask = () => {
         const trimmedText = inputValue.trim();
@@ -114,6 +131,7 @@ function TodoApp() {
             <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
                 总计：{tasks.length} 项 | 已完成：{tasks.filter(t => t.completed).length} 项
             </div>
+            <Counter />
         </div>
     );
 }

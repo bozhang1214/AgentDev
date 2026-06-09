@@ -2,13 +2,14 @@ from datetime import datetime
 from email import message
 import os
 import uuid
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from tools.weather_service import get_weather
 
 BASE_URL = "https://api.deepseek.com"
 MODEL = "deepseek-v4-flash"
@@ -148,3 +149,13 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=500,
         content={"detail": f"服务器内部错误：{str(exc)}"}
     )
+
+@app.get("/weather")
+async def weather_endpoint(location: str = Query(..., description="城市名称，如Beijing")):
+    """
+    获取指定城市的当前天气
+    示例：GET /weather?location=Beijing
+    """
+    weather_info = await get_weather(location)
+    print(f"weather_info: {weather_info}")
+    return {"location": location, "weather": weather_info}
