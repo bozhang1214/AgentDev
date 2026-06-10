@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useUser } from './contexts/UserContext';
 
 function Chat() {
     const [messages, setMessages] = useState([]);
@@ -6,6 +7,9 @@ function Chat() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [retryCount, setRetryCount] = useState(0);
+    const [toolCalling, setToolCalling] = useState(false);
+
+    const { user } = useUser();
 
     const [sessionId, setSessionId] = useState(() => {
         const saved = localStorage.getItem('chat_session_id');
@@ -32,8 +36,10 @@ function Chat() {
         if (userMessage === '') return;
 
         setMessages(prev => [...prev, { role: 'user', content: userMessage}]);
+
         setInputValue('');
         setIsLoading(true);
+        setToolCalling(false);
         setError(null);
 
         const controller = new AbortController();
@@ -67,7 +73,11 @@ function Chat() {
 
             const data = await response.json();
 
-            setMessages(prev => [...prev, {role: 'assistant', content: data.reply}]);
+            if (data.tool_called) {
+                setToolCalling(true);
+            }
+
+            setMessages(prev => [...prev, {role: 'assistant', content: data.reply, tokens: data.usage.total_tokens}]);
 
             console.log(`本次对话消耗token：${data.usage.total_tokens}`);
 
@@ -89,6 +99,7 @@ function Chat() {
             }
         } finally {
             setIsLoading(false);
+            setToolCalling(false);
         }
     };
 
@@ -108,6 +119,12 @@ function Chat() {
     return (
         <div style={{maxWidth: '600px', margin: '0 auto', padding:'20px', fontFamily: 'sans-serif'}}>
             <h2>🤖 AI 聊天助手（多轮对话）</h2>
+            <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <img src={user.avatar} alt='avatar' width='32' style={{ borderRadius: '50%' }} />
+                    <span>{user.name}</span>
+                </div>
+            </div>
             <p style={{fontSize: '14px', color: '#666'}}>
                 回话ID: {sessionId.substring(0, 8)}...
                 <button onClick={clearChat} style={{marginLeft: '10px', fontSize: '12px'}}>新对话</button>
@@ -153,7 +170,7 @@ function Chat() {
                 {isLoading && (
                     <div style={{display: 'flex', justifyContent: 'flex-start', marginBottom: '12px'}}>
                         <div style={{backgroundColor: '#e9ecef', padding: '10px 14px', borderRadius: '18px'}}>
-                            AI正在思考...
+                            {toolCalling ? '正在查询天气' : 'AI正在思考...'}
                         </div>
                     </div>
                 )}

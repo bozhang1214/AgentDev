@@ -1,18 +1,10 @@
 import { useEffect, useState } from "react";
 import Counter from "./Counter";
+import { useTheme } from "./contexts/ThemeContext";
+import { useTodoFilter } from "./contexts/TodoFilterContext";
 
 function TodoApp() {
-    // const [tasks, setTasks] = useState(() => {
-    //     const saved = localStorage.getItem('todo_tasks');
-    //     if (saved) {
-    //         return JSON.parse(saved);
-    //     }
-    //     return [
-    //         {id: 1, text: '学习React基础知识', completed: true},
-    //         {id: 2, text: '完成待办应用项目', completed: false},
-    //         {id: 3, text: '阅读《React前端设计》第4章', completed: false}
-    //     ];
-    // });
+    const { filter, setFilter } = useTodoFilter();
     const [tasks, setTasks] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [isInitialized, setIsInitialized] = useState(false);
@@ -35,6 +27,12 @@ function TodoApp() {
             localStorage.setItem('todo_tasks', JSON.stringify(tasks));
         }
     }, [tasks, isInitialized]);
+
+    const filteredTasks = tasks.filter(task => {
+        if (filter === 'active') return !task.completed;
+        if (filter === 'completed') return task.completed;
+        return true;
+    });
 
     const addTask = () => {
         const trimmedText = inputValue.trim();
@@ -62,9 +60,17 @@ function TodoApp() {
         ));
     };
 
+    const {theme, toggleTheme } = useTheme();
+
     return (
-        <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif'}}>
+        <div style={{ backgroundColor: theme === 'light' ? '#fff' : '#333', color: theme ==='light' ? '#000' : '#fff', maxWidth: '500px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif'}}>
             <h1>📝 React 待办应用</h1>
+
+            <div>
+                <button onClick={() => setFilter('all')}>全部</button>
+                <button onClick={() => setFilter('active')}>未完成</button>
+                <button onClick={() => setFilter('completed')}>已完成</button>
+            </div>
 
             <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
                 <input
@@ -85,7 +91,7 @@ function TodoApp() {
                 </p>
             ) : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {tasks.map((task) => (
+                    {filteredTasks.map((task) => (
                         <li
                             key={task.id}
                             style={{
@@ -131,6 +137,7 @@ function TodoApp() {
             <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
                 总计：{tasks.length} 项 | 已完成：{tasks.filter(t => t.completed).length} 项
             </div>
+            <button onClick={toggleTheme} style={{ alignContent: 'center', paddingBottom: '20px', fontSize: '16px'}}>切换主题</button>
             <Counter />
         </div>
     );
