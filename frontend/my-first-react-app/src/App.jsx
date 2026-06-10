@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import './App.css';
-import Chat from './Chat';
 import TimerControl from './TimerControl';
 import TodoApp from './TodoApp';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { TodoFilterProvider } from './contexts/TodoFilterContext';
 import { UserProvider } from './contexts/UserContext';
+import Chat from './w4d5/Chat';
 
 function App() {
     const [activeTab, setActiveTab] = useState('todo');
