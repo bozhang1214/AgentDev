@@ -1,15 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
+import { useApp } from './contexts/AppContext';
 import { useUser } from './contexts/UserContext';
+import { ACTION_TYPES, initialMessageState, messageReducer } from './week5/day2/reducers/messageReducer';
 
 function Chat() {
-    const [messages, setMessages] = useState([]);
+    const [state, dispatch] = useReducer(messageReducer, initialMessageState);
+    const { messages, isLoading, error } = state;
+    const { state: appState, dispatch: appDispatch } = useApp();
+    const { user } = useUser();
+
     const [inputValue, setInputValue] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [retryCount, setRetryCount] = useState(0);
     const [toolCalling, setToolCalling] = useState(false);
-
-    const { user } = useUser();
 
     const [sessionId, setSessionId] = useState(() => {
         const saved = localStorage.getItem('chat_session_id');
@@ -18,6 +20,7 @@ function Chat() {
     });
 
     const messagesEndRef = useRef(null);
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
@@ -26,7 +29,7 @@ function Chat() {
         localStorage.setItem('chat_session_id', sessionId);
     }, [sessionId]);
 
-    const inputRef = new useRef(null);
+    const inputRef = useRef(null);
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
@@ -35,12 +38,10 @@ function Chat() {
         const userMessage = inputValue.trim();
         if (userMessage === '') return;
 
-        setMessages(prev => [...prev, { role: 'user', content: userMessage}]);
-
+        dispatch({type: ACTION_TYPES.ADD_USER_MESSAGE, payload: userMessage});
         setInputValue('');
-        setIsLoading(true);
+        dispatch({ type: ACTION_TYPES.SET_LOADING, payload: true });
         setToolCalling(false);
-        setError(null);
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -77,7 +78,10 @@ function Chat() {
                 setToolCalling(true);
             }
 
-            setMessages(prev => [...prev, {role: 'assistant', content: data.reply, tokens: data.usage.total_tokens}]);
+            dispatch({
+                type: ACTION_TYPES.ADD_ASSISTANT_MESSAGE,
+                payload: {content: data.reply, tokens: data.usage?.total_tokens || 0}
+            });
 
             console.log(`本次对话消耗token：${data.usage.total_tokens}`);
 
@@ -86,11 +90,7 @@ function Chat() {
             }
             inputRef.current?.focus();
         } catch (err) {
-            if (err.name === 'AbortError') {
-                setError('请求超时，请检查后端服务是否正常运行。')
-            } else {
-                setError(err.meesage);
-            }
+            dispatch({type: ACTION_TYPES.SET_ERROR, payload: err.message});
             if (retryCount === 0 && err.name !== 'AbortError') {
                 console.log('自动重试...');
                 setRetryCount(1);
@@ -98,7 +98,7 @@ function Chat() {
                 return;
             }
         } finally {
-            setIsLoading(false);
+            dispatch({ type: ACTION_TYPES.SET_LOADING, payload: false });
             setToolCalling(false);
         }
     };
@@ -110,7 +110,7 @@ function Chat() {
     };
 
     const clearChat = () => {
-        setMessages([]);
+        dispatch({type: ACTION_TYPES.CLEAR_MESSAGES});
         const newId = crypto.randomUUID();
         setSessionId(newId);
         localStorage.setItem('chat_session_id', newId);

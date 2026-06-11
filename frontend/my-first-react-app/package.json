@@ -12,7 +12,8 @@
   "dependencies": {
     "@rolldown/binding-linux-arm64-musl": "^1.1.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-router": "^7.17.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
